@@ -75,13 +75,6 @@ if "pq_sig" in st.session_state:
 
 st.subheader("Signature Size Comparison")
 
-if "classical_sig" in st.session_state:
-    st.write("Classical Signature Size:", len(st.session_state.classical_sig), "bytes")
-
-if "pq_sig" in st.session_state:
-    st.write("Post-Quantum Signature Size:", len(st.session_state.pq_sig), "elements")
-
-
 st.subheader("Quantum Attack Simulation")
 
 if st.button("Simualate Quantum Attack"):
