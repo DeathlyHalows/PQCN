@@ -6,13 +6,47 @@ import matplotlib.pyplot as plt
 import numpy as np
 from ecdsa import SigningKey, SECP256k1
 
+# ================= HACKER TERMINAL STYLE (ADDED) =================
+st.markdown("""
+<style>
+body, .stApp {
+    background-color: #0d0d0d;
+    color: #00ff9f;
+    font-family: monospace;
+}
+h1, h2, h3 {
+    color: #00ff9f;
+}
+.stButton button {
+    background-color: black;
+    color: #00ff9f;
+    border: 1px solid #00ff9f;
+    font-family: monospace;
+}
+.stTextInput input {
+    background-color: black;
+    color: #00ff9f;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# ================= ANIMATION FUNCTION (ADDED) =================
+def hacker_print(text, speed=0.01):
+    placeholder = st.empty()
+    output = ""
+    for char in text:
+        output += char
+        placeholder.markdown(f"```{output}```")
+        time.sleep(speed)
+
+# ================= ORIGINAL CODE =================
+
 st.set_page_config(page_title = "Quantum Crypto Simulator", layout = "wide")
 st.title("Quantum vs Post-Quantum Crypto Simulator")
 
 message = st.text_input("Enter message", "Send 10 coins")
 message_bytes = message.encode()
 
-# Main tabs
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "🔐 Classical Crypto",
     "📦 Post-Quantum Crypto", 
@@ -21,25 +55,25 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "📊 Comparison"
 ])
 
-# ============ TAB 1: CLASSICAL CRYPTOGRAPHY ============
+# ================= TAB 1 =================
 with tab1:
     st.subheader("Classical Cryptography (ECDSA)")
-    
+
     if "ecdsa_keys" not in st.session_state:
         sk = SigningKey.generate(curve=SECP256k1)
         vk = sk.verifying_key
         st.session_state.ecdsa_keys = (sk, vk)
-    
+
     sk, vk = st.session_state.ecdsa_keys
-    
+
     col1, col2 = st.columns(2)
-    
+
     with col1:
         if st.button("🔑 Sign with Classical Crypto"):
             signature = sk.sign(message_bytes)
             st.session_state.classical_sig = signature
             st.success("✓ Signature generated")
-    
+
     with col2:
         if st.button("✅ Verify Signature"):
             if "classical_sig" in st.session_state:
@@ -51,12 +85,46 @@ with tab1:
             else:
                 st.warning("⚠️ No signature to verify")
 
-# ============ TAB 2: POST-QUANTUM CRYPTOGRAPHY ============
+    # ===== ADDED VISUAL TERMINAL =====
+    if "classical_sig" in st.session_state:
+        st.write("---")
+        st.subheader("💻 ECDSA Terminal View")
+
+        st.code(f"Message: {message}")
+        st.code(f"Signature: {st.session_state.classical_sig.hex()[:60]}...")
+        st.code(f"Public Key: {vk.to_string().hex()[:60]}...")
+
+        if st.button("🧠 Run Visual Verification"):
+            hacker_print("[+] Loading public key...")
+            hacker_print("[+] Hashing message...")
+            hacker_print("[+] Verifying signature...")
+
+            try:
+                valid = vk.verify(st.session_state.classical_sig, message_bytes)
+                if valid:
+                    hacker_print("[✔] AUTHENTIC")
+                else:
+                    hacker_print("[✖] INVALID")
+            except:
+                hacker_print("[✖] FAILED")
+
+    # ===== ADDED TAMPERING =====
+    if "classical_sig" in st.session_state:
+        if st.button("⚠️ Tamper Message (Demo)"):
+            tampered = message + " hacked"
+
+            hacker_print("[!] Message modified...")
+            try:
+                vk.verify(st.session_state.classical_sig, tampered.encode())
+                hacker_print("[✖] SYSTEM FAILURE")
+            except:
+                hacker_print("[✔] TAMPERING DETECTED")
+
+# ================= TAB 2 =================
 with tab2:
     st.subheader("Post-Quantum Cryptography (Lamport Signatures)")
-    
+
     def generate_lamport_keys_from_message(message_bytes):
-        """Generate deterministic Lamport keys based on the message"""
         seed = hashlib.sha256(message_bytes).digest()
         private_key = []
         for i in range(256):
@@ -65,7 +133,7 @@ with tab2:
             private_key.append((seed1, seed2))
         public_key = [(hashlib.sha256(x[0]).digest(), hashlib.sha256(x[1]).digest()) for x in private_key]
         return private_key, public_key
-    
+
     def lamport_sign(message, private_key):
         digest = hashlib.sha256(message).digest()
         signature = []
@@ -74,7 +142,7 @@ with tab2:
                 bit_val = (byte >> bit) & 1
                 signature.append(private_key[i*8 + bit][bit_val])
         return signature
-    
+
     def lamport_verify(message, signature, public_key):
         digest = hashlib.sha256(message).digest()
         idx = 0
@@ -85,9 +153,9 @@ with tab2:
                     return False
                 idx += 1
         return True
-    
+
     col1, col2 = st.columns(2)
-    
+
     with col1:
         if st.button("🔑 Sign with Post-Quantum Crypto"):
             priv, pub = generate_lamport_keys_from_message(message_bytes)
@@ -95,7 +163,7 @@ with tab2:
             st.session_state.pq_sig = signature
             st.session_state.pq_pub = pub
             st.success("✓ Signature generated")
-    
+
     with col2:
         if st.button("✅ Verify Post-Quantum Signature"):
             if "pq_sig" in st.session_state:
@@ -106,6 +174,32 @@ with tab2:
                     st.error("❌ Verification: Failed")
             else:
                 st.warning("⚠️ No signature to verify")
+
+    # ===== ADDED PQ TERMINAL =====
+    if "pq_sig" in st.session_state:
+        st.write("---")
+        st.subheader("💻 Post-Quantum Terminal View")
+
+        st.code(f"Message: {message}")
+        st.code(f"Signature fragment: {str(st.session_state.pq_sig[:2])} ...")
+        st.code(f"Public Key fragment: {str(st.session_state.pq_pub[:2])} ...")
+
+        if st.button("🧠 Run PQ Visual Verification"):
+            hacker_print("[+] Hashing message...")
+            hacker_print("[+] Matching signature...")
+            hacker_print("[+] Verifying hashes...")
+
+            valid = lamport_verify(
+                message_bytes,
+                st.session_state.pq_sig,
+                st.session_state.pq_pub
+            )
+
+            if valid:
+                hacker_print("[✔] QUANTUM SAFE")
+            else:
+                hacker_print("[✖] FAILED")
+
 
 # ============ TAB 3: KEY DERIVATION ANALYSIS ============
 with tab3:
