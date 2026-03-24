@@ -55,18 +55,18 @@ with tab1:
 with tab2:
     st.subheader("Post-Quantum Cryptography (Lamport Signatures)")
     
-    def generate_lamport_keys_from_message(message_bytes):
-        """Generate deterministic Lamport keys based on the message"""
-        # Use message hash as seed for key generation
-        seed = hashlib.sha256(message_bytes).digest()
-        private_key = []
-        for i in range(256):
-            # Derive pairs deterministically from seed
-            key1 = hashlib.sha256(seed + bytes([i*2])).digest()
-            key2 = hashlib.sha256(seed + bytes([i*2+1])).digest()
-            private_key.append((key1, key2))
-        public_key = [(hashlib.sha256(x[0]).digest(), hashlib.sha256(x[1]).digest()) for x in private_key]
-        return private_key, public_key
+def generate_lamport_keys_from_message(message_bytes):
+    """Generate deterministic Lamport keys based on the message"""
+    # Use message hash as seed for key generation
+    seed = hashlib.sha256(message_bytes).digest()
+    private_key = []
+    for i in range(256):
+        # Create two different seeds for each pair
+        seed1 = hashlib.sha256(seed + i.to_bytes(4, 'big')).digest()
+        seed2 = hashlib.sha256(seed + (i + 256).to_bytes(4, 'big')).digest()
+        private_key.append((seed1, seed2))
+    public_key = [(hashlib.sha256(x[0]).digest(), hashlib.sha256(x[1]).digest()) for x in private_key]
+    return private_key, public_key
     
     def lamport_sign(message, private_key):
         digest = hashlib.sha256(message).digest()
