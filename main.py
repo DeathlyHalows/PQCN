@@ -96,16 +96,16 @@ with tab2:
             st.session_state.pq_pub = pub
             st.success("✓ Signature generated")
     
-    with col2:
-        if st.button("✅ Verify Post-Quantum Signature"):
-            if "pq_sig" in st.session_state:
-                valid = lamport_verify(message_bytes, st.session_state.pq_sig, pub)
-                if valid:
-                    st.success("✓ Verification: Valid")
-                else:
-                    st.error("❌ Verification: Failed")
+with col2:
+    if st.button("✅ Verify Post-Quantum Signature"):
+        if "pq_sig" in st.session_state:
+            valid = lamport_verify(message_bytes, st.session_state.pq_sig, st.session_state.pq_pub)  # ✅ Use stored pub key
+            if valid:
+                st.success("✓ Verification: Valid")
             else:
-                st.warning("⚠️ No signature to verify")
+                st.error("❌ Verification: Failed")
+        else:
+            st.warning("⚠️ No signature to verify")
 
 # ============ TAB 3: KEY DERIVATION ANALYSIS ============
 with tab3:
