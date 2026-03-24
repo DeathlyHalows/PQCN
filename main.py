@@ -65,9 +65,10 @@ if "lamport_keys" not in st.session_state:
 priv, pub = st.session_state.lamport_keys
 
 if st.button("Sign with Post-Quantum Crypto"):
-    signature = lamport_sign(message_bytes,priv)
+    priv, pub = generate_lamport_keys()
+    signature = lamport_sign(message_bytes, priv)
     st.session_state.pq_sig = signature
-    st.success("Post-Quantum Signature Generated")
+    st.session_state.pq_pub = pub
 
 if "pq_sig" in st.session_state:
     valid = lamport_verify(message_bytes, st.session_state.pq_sig, pub)
