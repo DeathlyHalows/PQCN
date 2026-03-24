@@ -390,3 +390,4 @@ with tab5:
     - The security of post-quantum schemes is based on hard mathematical problems believed resistant to quantum attacks
     - Lamport signatures are based only on hash functions (quantum-resistant), while ECDSA relies on elliptic curve discrete logarithm (broken by Shor's Algorithm)
     """)
+    st.info("Currently only Grover's Algorithm can reduce the time complexity of lamport based cryptocurrency.")
