@@ -55,8 +55,16 @@ with tab1:
 with tab2:
     st.subheader("Post-Quantum Cryptography (Lamport Signatures)")
     
-    def generate_lamport_keys():
-        private_key = [(os.urandom(32), os.urandom(32)) for _ in range(256)]
+    def generate_lamport_keys_from_message(message_bytes):
+        """Generate deterministic Lamport keys based on the message"""
+        # Use message hash as seed for key generation
+        seed = hashlib.sha256(message_bytes).digest()
+        private_key = []
+        for i in range(256):
+            # Derive pairs deterministically from seed
+            key1 = hashlib.sha256(seed + bytes([i*2])).digest()
+            key2 = hashlib.sha256(seed + bytes([i*2+1])).digest()
+            private_key.append((key1, key2))
         public_key = [(hashlib.sha256(x[0]).digest(), hashlib.sha256(x[1]).digest()) for x in private_key]
         return private_key, public_key
     
@@ -80,32 +88,26 @@ with tab2:
                 idx += 1
         return True
     
-    if "lamport_keys" not in st.session_state:
-        priv, pub = generate_lamport_keys()
-        st.session_state.lamport_keys = (priv, pub)
-    
-    priv, pub = st.session_state.lamport_keys
-    
     col1, col2 = st.columns(2)
     
     with col1:
         if st.button("🔑 Sign with Post-Quantum Crypto"):
-            priv, pub = generate_lamport_keys()
+            priv, pub = generate_lamport_keys_from_message(message_bytes)
             signature = lamport_sign(message_bytes, priv)
             st.session_state.pq_sig = signature
             st.session_state.pq_pub = pub
             st.success("✓ Signature generated")
     
-with col2:
-    if st.button("✅ Verify Post-Quantum Signature"):
-        if "pq_sig" in st.session_state:
-            valid = lamport_verify(message_bytes, st.session_state.pq_sig, st.session_state.pq_pub)  # ✅ Use stored pub key
-            if valid:
-                st.success("✓ Verification: Valid")
+    with col2:
+        if st.button("✅ Verify Post-Quantum Signature"):
+            if "pq_sig" in st.session_state:
+                valid = lamport_verify(message_bytes, st.session_state.pq_sig, st.session_state.pq_pub)
+                if valid:
+                    st.success("✓ Verification: Valid")
+                else:
+                    st.error("❌ Verification: Failed")
             else:
-                st.error("❌ Verification: Failed")
-        else:
-            st.warning("⚠️ No signature to verify")
+                st.warning("⚠️ No signature to verify")
 
 # ============ TAB 3: KEY DERIVATION ANALYSIS ============
 with tab3:
