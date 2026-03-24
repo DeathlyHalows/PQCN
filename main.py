@@ -274,7 +274,7 @@ with tab3:
                 'ECDSA\n(Quantum)',
                 'Lamport\n(Brute Force)'
             ]
-            operations = [2**128, 2**128, 2**256]  # Simplified
+            operations = [float(2**128), float(2**128), float(2**256)]
             colors = ['#3498db', '#e74c3c', '#2ecc71']
             
             bars = ax.bar(attacks, operations, color=colors)
