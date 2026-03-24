@@ -123,9 +123,7 @@ with tab3:
         
         with col2:
             st.write("**Step 2: Apply Hash Function (SHA-256)**")
-            st.write("```
-sha256(private_key)
-```")
+            st.write("```sha256(private_key)```")
         
         with col3:
             st.write("**Step 3: Resulting Public Key**")
