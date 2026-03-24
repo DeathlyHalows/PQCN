@@ -91,7 +91,7 @@ st.table({
     "Post-Quantum (Lamport)" : ["Yes","Large","Slower"]
 })
 
-st.caption("Note: Quantum Attack s theoreically based on Shor's Algorithm, not executed in this demo")
+st.caption("Note: Quantum Attack is theoretically based on Shor's Algorithm, not executed in this demo")
 
 st.info("Lamport signatures are one-time use, so in a real application you would need to generate new keys for each message. This demo is simplified for educational purposes.")
 st.info("In practice, more efficient post-quantum schemes like CRYSTALS-Dilithium or Falcon would be used instead of Lamport signatures.")
