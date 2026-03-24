@@ -108,60 +108,60 @@ with tab1:
             except:
                 hacker_print("[✖] FAILED")
 # ===== ENHANCED TAMPERING PROOF =====
-if "classical_sig" in st.session_state:
-    if st.button("⚠️ Tamper Message (Detailed Demo)"):
+    if "classical_sig" in st.session_state:
+        if st.button("⚠️ Tamper Message (Detailed  Demo)"):
 
-        original = message
-        tampered = message + " hacked"
+            original = message
+            tampered = message + " hacked"
 
-        st.subheader("🔍 Tampering Proof")
+            st.subheader("🔍 Tampering Proof")
 
-        col1, col2 = st.columns(2)
+            col1, col2 = st.columns(2)
 
-        with col1:
-            st.write("### ✅ Original Message")
-            st.code(original)
+            with col1:
+                st.write("### ✅ Original Message")
+                st.code(original)
 
-            try:
-                valid_original = vk.verify(
+                try:
+                    valid_original = vk.verify(
                     st.session_state.classical_sig,
                     original.encode()
                 )
-                st.success("✔ Signature VALID")
-            except:
-                st.error("❌ Invalid")
+                    st.success("✔ Signature VALID")
+                except:
+                    st.error("❌ Invalid")
 
-        with col2:
-            st.write("### ❌ Tampered Message")
-            st.code(tampered)
+            with col2:
+                st.write("### ❌ Tampered Message")
+                st.code(tampered)
 
-            try:
-                valid_tampered = vk.verify(
+                try:
+                    valid_tampered = vk.verify(
                     st.session_state.classical_sig,
                     tampered.encode()
                 )
-                if valid_tampered:
-                    st.error("❌ STILL VALID (unexpected)")
-                else:
+                    if valid_tampered:
+                        st.error("❌ STILL VALID (unexpected)")
+                    else:
+                        st.error("❌ Signature INVALID")
+                except:
                     st.error("❌ Signature INVALID")
-            except:
-                st.error("❌ Signature INVALID")
 
-        st.write("---")
+            st.write("---")
 
-        # 🔥 HASH COMPARISON (VERY IMPORTANT)
-        st.subheader("🧠 Hash Comparison")
+            # 🔥 HASH COMPARISON (VERY IMPORTANT)
+            st.subheader("🧠 Hash Comparison")
 
-        original_hash = hashlib.sha256(original.encode()).hexdigest()
-        tampered_hash = hashlib.sha256(tampered.encode()).hexdigest()
+            original_hash = hashlib.sha256(original.encode()).hexdigest()
+            tampered_hash = hashlib.sha256(tampered.encode()).hexdigest()
 
-        st.write("Original Hash:")
-        st.code(original_hash)
+            st.write("Original Hash:")
+            st.code(original_hash)
 
-        st.write("Tampered Hash:")
-        st.code(tampered_hash)
+            st.write("Tampered Hash:")
+            st.code(tampered_hash)
 
-        st.error("⚠️ Even a tiny change completely changes the hash → signature breaks")
+            st.error("⚠️ Even a tiny change completely changes the hash → signature breaks")
 
 # ================= TAB 2 =================
 with tab2:
