@@ -74,8 +74,6 @@ if "pq_sig" in st.session_state:
     valid = lamport_verify(message_bytes, st.session_state.pq_sig, pub)
     st.write("Verification:", "Valid" if valid else "Invalid")
 
-st.subheader("Signature Size Comparison")
-
 st.subheader("Quantum Attack Simulation")
 
 if st.button("Simualate Quantum Attack"):
