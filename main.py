@@ -161,8 +161,8 @@ with tab1:
             with col1:
                 st.write("Original Message")
                 try:
-                 vk.verify(st.session_state.classical_sig, original.encode())
-                    st.success("✔ Valid")
+                    vk.verify(st.session_state.classical_sig, original.encode())
+            st.success("✔ Valid")
                 except:
                     st.error("❌ Invalid")
 
