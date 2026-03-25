@@ -2,6 +2,7 @@ import streamlit as st
 import hashlib
 import os
 import time
+import difflib
 import matplotlib.pyplot as plt
 import numpy as np
 from ecdsa import SigningKey, SECP256k1
