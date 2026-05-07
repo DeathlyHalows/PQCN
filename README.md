@@ -1,11 +1,8 @@
 # PQCN: Post-Quantum Cryptographic Network Simulation
 
 <!-- Dynamic Repository Shields -->
-[![GitHub stars](https://shields.io)](https://github.com)
-[![GitHub forks](https://shields.io)](https://github.com)
-[![GitHub issues](https://shields.io)](https://github.com)
-[![License: MIT](https://shields.io)](https://opensource.org)
-[![Python Version](https://shields.io)](https://python.org)
+[![GitHub stars](https://img.shields.io/github/stars/DeathlyHalows/PQCN?style=social)](https://github.com/DeathlyHalows/PQCN/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/DeathlyHalows/PQCN?style=social)](https://github.com/DeathlyHalows/PQCN/network/members)
 
 ---
 
